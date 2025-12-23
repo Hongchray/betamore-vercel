@@ -65,6 +65,7 @@
         "MAIL_PASSWORD": "hovohvxlimiypdrb",
         "MAIL_ENCRYPTION": "ssl",
         "MAIL_FROM_ADDRESS": "supports@focuzsolution.com",
-        "MAIL_FROM_NAME": "BetaMore Limited"
+        "MAIL_FROM_NAME": "BetaMore Limited",
+        "FIREBASE_CREDENTIALS": "app/firebase/credentials.json"
     }
 }
