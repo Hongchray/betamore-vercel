@@ -1,0 +1,55 @@
+<?php
+
+return [
+    'dashboard' => 'Dashboard',
+    'welcome_message' => "Welcome, :name! Here's an overview of your business activity.",
+    'total_orders' => 'Total Orders',
+    'active_orders' => 'Active orders',
+    'total_customers' => 'Total Customers',
+    'registered_users' => 'Registered users',
+    'total_revenue' => 'Total Revenue',
+    'all_time_earnings' => 'All time earnings',
+    'pending_revenue' => 'Pending Revenue',
+    'of_total' => 'of total',
+    'revenue_overview' => 'Revenue Overview',
+    'revenue_status' => 'Revenue Status',
+    'pending' => 'Pending',
+    'paid_revenue' => 'Paid Revenue',
+    'completed_revenue' => 'Completed Revenue',
+    'quick_stats' => 'Quick Stats',
+    'monthly_revenue' => 'Monthly Revenue',
+    'daily_revenue' => 'Daily Revenue',
+    'last_30_days' => 'Last 30 Days',
+    'avg_order_value' => 'Avg. Order Value',
+    'total_paid' => 'Total Paid Revenue',
+    'paid' => 'Paid Revenue',
+    'analytics_coming_soon' => 'Analytics Coming Soon',
+    'analytics_placeholder' => 'Detailed charts and analytics will be displayed here',
+
+    'top_customers' => 'Top Customers',
+
+    'customer_registrations' => 'Customer Registrations',
+    'orders' => 'Orders',
+    'customer_orders_chart_title' => 'Customer Registrations & Orders',
+    'month' => 'Month',
+    'count' => 'Count',
+
+    'months' => [
+        'jan' => 'Jan',
+        'feb' => 'Feb',
+        'mar' => 'Mar',
+        'apr' => 'Apr',
+        'may' => 'May',
+        'jun' => 'Jun',
+        'jul' => 'Jul',
+        'aug' => 'Aug',
+        'sep' => 'Sep',
+        'oct' => 'Oct',
+        'nov' => 'Nov',
+        'dec' => 'Dec',
+    ],
+
+    'no_customers' => 'No customers yet',
+    'no_customers_hint' => 'Get started by creating your first order.',
+
+];

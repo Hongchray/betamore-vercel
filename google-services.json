@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "996581314656",
+    "project_id": "beta-more-limited",
+    "storage_bucket": "beta-more-limited.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996581314656:android:3170b7b7ec647a44f3b305",
+        "android_client_info": {
+          "package_name": "com.company.betamore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "996581314656-chte72pkls20upkho8ur9c99ljh80pio.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeL1bnqr8H7AYJOxUXajgXxUbjzEpZbVg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "996581314656-chte72pkls20upkho8ur9c99ljh80pio.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
