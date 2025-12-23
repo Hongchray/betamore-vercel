@@ -227,7 +227,7 @@
             const data = Object.fromEntries(formData);
             
             try {
-                const response = await fetch('/api/notifications/send-test', {
+                const response = await fetch('/api/api/notifications/send-test', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

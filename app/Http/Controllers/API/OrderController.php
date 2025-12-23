@@ -323,7 +323,7 @@ class OrderController extends Controller
                 'delivery_id' => $request->delivery_id,
                 'delivery_fee' => $deliveryFee,
                 'address_id' => $request->address_id,
-                'status' => OrderStatus::PENDING->value,
+                'status' => OrderStatus::PENDING,
                 'note' => $request->note,
                 'payment_method_id' => $request->payment_method_id,
             ]);
@@ -333,7 +333,7 @@ class OrderController extends Controller
             if ($cartOrder->orderPayment) {
                 $cartOrder->orderPayment->update([
                     'payment_method_id' => $request->payment_method_id,
-                    'payment_status' => PaymentStatus::Pending->value,
+                    'payment_status' => PaymentStatus::Pending,
                     'tran_id' => $cartOrder->order_number,
                     'amount' => $cartOrder->total_amount
                 ]);
@@ -386,7 +386,7 @@ class OrderController extends Controller
                     'order_id' => $cartOrder->id,
                     'order_number' => $cartOrder->order_number,
                     'total_amount' => $cartOrder->total_amount,
-                    'status' => $cartOrder->status->value,
+                    'status' => $cartOrder->status,
                     'payway' => $paywayResponse
                 ]
             ], 201);
