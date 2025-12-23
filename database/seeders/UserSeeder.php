@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
                 'telegram' => null,
                 'type' => UserType::ADMIN->value,
                 'email' => 'hello@focuzsolution.com',
-                'password' => Hash::make('iamfocuz'),
+                'password' => Hash::make('b4tamore@pp'),
             ],
             
         ];
