@@ -45,9 +45,9 @@ return [
     ],
 
     'firebase' => [
-        'credentials' => env('FIREBASE_CREDENTIALS'),
+        'credentials' => json_decode(env('FIREBASE_CREDENTIALS_JSON'), true),
         'project_id'  => env('FIREBASE_PROJECT_ID'),
-
     ],
+
 
 ];
