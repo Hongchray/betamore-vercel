@@ -13,10 +13,10 @@ return new class extends Migration {
             $table->dropIndex('notifications_notifiable_type_notifiable_id_index');
         });
 
-        // Change notifiable_id to UUID
+        // Change notifiable_id to UUID (Postgres syntax)
         DB::statement("
             ALTER TABLE notifications
-            MODIFY notifiable_id CHAR(36) NOT NULL
+            ALTER COLUMN notifiable_id TYPE CHAR(36) USING notifiable_id::CHAR(36)
         ");
 
         // Recreate index
@@ -27,14 +27,14 @@ return new class extends Migration {
 
     public function down(): void
     {
-        // Rollback to BIGINT (only if you ever need it)
+        // Rollback to BIGINT
         Schema::table('notifications', function (Blueprint $table) {
             $table->dropIndex('notifications_notifiable_type_notifiable_id_index');
         });
 
         DB::statement("
             ALTER TABLE notifications
-            MODIFY notifiable_id BIGINT UNSIGNED NOT NULL
+            ALTER COLUMN notifiable_id TYPE BIGINT USING notifiable_id::BIGINT
         ");
 
         Schema::table('notifications', function (Blueprint $table) {
