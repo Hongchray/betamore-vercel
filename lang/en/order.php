@@ -24,6 +24,12 @@ return [
         'failed' => 'Failed',
         'paid' => 'Paid',
         'received' => 'Received', // Added for tracking steps
+        "PENDING" => "PENDING",
+        "CONFIRMED" => "CONFIRMED",
+        "PROCESSING" => "PROCESSING",
+        "SHIPPED" => "SHIPPED",
+        "DELIVERED" => "DELIVERED",
+
     ],
     'tracking' => [
         'title' => 'Order Tracking',

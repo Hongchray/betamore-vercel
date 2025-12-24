@@ -7,7 +7,7 @@ use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use App\Models\Notification;
 class OrderService
 {
     public function __construct(
@@ -91,14 +91,11 @@ class OrderService
      * @param string $oldStatus
      * @return void
      */
-   private function sendOrderStatusNotification(Order $order, string $newStatus, string $oldStatus): void
+    private function sendOrderStatusNotification(Order $order, string $newStatus, string $oldStatus): void
     {
-        // Reload order with user relationship to ensure we have fresh data
         $order->load('user');
-        
-        // Get user directly from database to ensure we have the fcm_token
         $user = $order->user;
-        
+
         if (!$user) {
             Log::warning('Cannot send notification: User not found', [
                 'order_id' => $order->id,
@@ -106,68 +103,83 @@ class OrderService
             return;
         }
 
-        // Refresh user from database to get latest fcm_token
-        $user->refresh();
+        $title = $this->getNotificationTitle($newStatus);
+        $body  = $this->getNotificationBody($order, $newStatus);
 
-        // Debug logging
-        Log::info('Attempting to send order notification', [
-            'order_id' => $order->id,
-            'user_id' => $user->id,
-            'has_user' => true,
-            'has_fcm_token' => !is_null($user->fcm_token),
-            'fcm_token' => $user->fcm_token ? substr($user->fcm_token, 0, 20) . '...' : null,
-            'old_status' => $oldStatus,
-            'new_status' => $newStatus,
-        ]);
+        $data = [
+            'order_id'     => (string) $order->id,
+            'order_number' => $order->order_number ?? '',
+            'status'       => $newStatus,
+            'old_status'   => $oldStatus,
+            'type'         => 'order_status_update',
+        ];
 
-        if (!$user->fcm_token) {
-            Log::warning('Cannot send notification: User has no FCM token', [
+        /** -------------------------------
+         * 1️⃣ STORE notification FIRST
+         * -------------------------------- */
+        try {
+            // ✅ DON'T pass is_read and is_sent - let DB defaults handle it
+            $notification = Notification::create([
+                'user_id' => $user->id,
+                'type'    => 'order_status_update',
+                'title'   => $title,
+                'body'    => $body,
+                'data'    => $data,
+                // Remove these two lines:
+                // 'is_read' => false,
+                // 'is_sent' => false,
+            ]);
+
+            Log::info('Notification stored', [
+                'notification_id' => $notification->id,
                 'order_id' => $order->id,
+                'user_id' => $user->id,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to store notification', [
+                'order_id' => $order->id,
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+            return;
+        }
+
+        /** --------------------------------
+         * 2️⃣ SEND PUSH (optional)
+         * -------------------------------- */
+        if (!$user->fcm_token) {
+            Log::warning('User has no FCM token', [
+                'notification_id' => $notification->id,
                 'user_id' => $user->id,
             ]);
             return;
         }
 
         try {
-            $title = $this->getNotificationTitle($newStatus);
-            $body = $this->getNotificationBody($order, $newStatus);
-
-            Log::info('Sending notification', [
-                'order_id' => $order->id,
-                'user_id' => $user->id,
-                'title' => $title,
-                'body' => $body,
-            ]);
-
-            $result = $this->notificationService->sendToDevice(
+            $this->notificationService->sendToDevice(
                 $user->fcm_token,
                 $title,
                 $body,
-                [
-                    'order_id' => (string) $order->id,
-                    'order_number' => $order->order_number ?? '',
-                    'status' => $newStatus,
-                    'type' => 'order_status_update',
-                ]
+                $data
             );
 
-            Log::info('Order status notification sent successfully', [
-                'order_id' => $order->id,
-                'user_id' => $user->id,
-                'status' => $newStatus,
-                'result' => $result,
+            /** -----------------------------
+             * 3️⃣ MARK AS SENT
+             * ------------------------------ */
+            $notification->markAsSent();
+
+            Log::info('Push notification sent', [
+                'notification_id' => $notification->id,
             ]);
 
         } catch (\Exception $e) {
-            // Log but don't throw - notification failure shouldn't break the order update
-            Log::error('Failed to send order status notification', [
-                'order_id' => $order->id,
-                'user_id' => $user->id,
+            Log::error('Failed to send push notification', [
+                'notification_id' => $notification->id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
+
 
     /**
      * Get notification title based on status

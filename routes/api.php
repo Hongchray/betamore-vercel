@@ -24,12 +24,8 @@ use App\Notifications\OrderStatusUpdated;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Payment;
-use App\Http\Controllers\Api\FcmTokenController;
-use App\Http\Controllers\NotificationController;
-
-Route::post('/notifications/send-test', [NotificationController::class, 'sendTest']);
-Route::post('/notifications/save-token', [NotificationController::class, 'saveToken']);
-Route::post('/notifications/send-to-user', [NotificationController::class, 'sendToUser']);
+use App\Http\Controllers\API\FcmTokenController;
+use App\Http\Controllers\API\NotificationController;
 
 Route::prefix('auth')->group(function () {
     
@@ -73,6 +69,14 @@ Route::post('/payway/check-status', [OrderController::class, 'checkStatus']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'index']);
+        Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
+        Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+        Route::delete('/{id}', [NotificationController::class, 'destroy']);
+    });
+    
     Route::prefix('auth')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/change-password', [AuthController::class, 'changePassword']);
