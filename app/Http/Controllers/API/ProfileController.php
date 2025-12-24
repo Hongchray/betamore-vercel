@@ -14,6 +14,7 @@ class ProfileController extends Controller
         return response()->json([
             'message' => 'Profile retrieved successfully.',
             'user' => [
+                'id'=> $user->id,
                 'customer_id' => $user->user_id,
                 'phone' => $user->phone,
                 'email' => $user->email,
