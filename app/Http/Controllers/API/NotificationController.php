@@ -1,10 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use App\Models\Notification;
+use Illuminate\Support\Facades\Log;
 
 class NotificationController extends Controller
 {
@@ -13,7 +16,7 @@ class NotificationController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $perPage = $request->input('per_page', 15);
+        $perPage = $request->input('per_page', 10);
 
         $notifications = $request->user()
             ->notifications()
@@ -27,26 +30,29 @@ class NotificationController extends Controller
      */
     public function unreadCount(Request $request): JsonResponse
     {
-        $count = $request->user()
-            ->notifications()
-            ->where('is_read', false) // ✅ PostgreSQL-safe
-            ->count();
+        $count = Notification::where('user_id', $request->user()->id)
+                    ->whereRaw('"is_read" = false')
+                    ->count();
 
-        return response()->json(['count' => $count]);
+        return response()->json(['unread_count' => $count]);
     }
+
+
 
     /**
      * Mark notification as read
      */
     public function markAsRead(Request $request, string $id): JsonResponse
     {
+        // Find the unread notification safely for PostgreSQL
         $notification = $request->user()
             ->notifications()
-            ->where('is_read', false)
+            ->whereRaw('"is_read" = false')
             ->findOrFail($id);
 
+        // Mark it as read with PostgreSQL-safe boolean
         $notification->update([
-            'is_read' => true,
+            'is_read' => DB::raw('true'),
             'read_at' => now(),
         ]);
 
@@ -56,6 +62,7 @@ class NotificationController extends Controller
         ]);
     }
 
+
     /**
      * Mark ALL notifications as read
      */
@@ -63,9 +70,9 @@ class NotificationController extends Controller
     {
         $request->user()
             ->notifications()
-            ->where('is_read', false) // ✅ DO NOT use unreadNotifications()
+            ->whereRaw('"is_read" = false') // PostgreSQL-safe boolean check
             ->update([
-                'is_read' => true,
+                'is_read' => DB::raw('true'), // PostgreSQL-safe boolean set
                 'read_at' => now(),
             ]);
 

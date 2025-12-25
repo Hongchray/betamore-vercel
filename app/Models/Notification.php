@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Casts\BooleanCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
@@ -27,8 +26,8 @@ class Notification extends Model
 
     protected $casts = [
         'data'     => 'array',
-        'is_read'  => BooleanCast::class,  // Use custom cast
-        'is_sent'  => BooleanCast::class,  // Use custom cast
+        'is_read'  => 'boolean',  // ✅ Use Laravel's built-in boolean cast
+        'is_sent'  => 'boolean',  // ✅ Use Laravel's built-in boolean cast
         'read_at'  => 'datetime',
         'sent_at'  => 'datetime',
     ];
@@ -67,10 +66,11 @@ class Notification extends Model
         }
     }
 
-    public function scopeUnread($query)
+     public function scopeUnread($query)
     {
         return $query->where('is_read', false);
     }
+
 
     public function scopeRead($query)
     {

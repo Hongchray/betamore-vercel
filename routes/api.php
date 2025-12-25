@@ -70,7 +70,7 @@ Route::post('/payway/check-status', [OrderController::class, 'checkStatus']);
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('notifications')->group(function () {
-        Route::get('/', [NotificationController::class, 'index']);
+        Route::get('/', action: [NotificationController::class, 'index']);
         Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
         Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
         Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
@@ -105,24 +105,3 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
 });
-
-
-
-Route::middleware('auth:sanctum')->post('/user/fcm-token', function (Request $request) {
-    // Validate the request
-    $request->validate([
-        'fcm_token' => 'required|string',
-    ]);
-
-    // Save FCM token for the authenticated user
-    $user = $request->user();
-    $user->update([
-        'fcm_token' => $request->fcm_token,
-    ]);
-
-    return response()->json([
-        'message' => 'FCM token saved successfully',
-    ]);
-});
-
-// Update order status and send notification

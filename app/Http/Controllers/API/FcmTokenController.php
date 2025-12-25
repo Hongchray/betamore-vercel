@@ -23,7 +23,7 @@ class FcmTokenController extends Controller
                     'success' => false,
                     'message' => 'Validation failed',
                     'errors' => $validator->errors(),
-                ], 422);
+                ], status: 422);
             }
 
             // ✅ Get authenticated user from token
